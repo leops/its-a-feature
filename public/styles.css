@@ -1,7 +1,8 @@
-a:hover{
-    text-decoration: none;
-}
-header{
+header {
     margin-top: 1rem;
     margin-bottom: 2rem;
+}
+
+header a:hover {
+    text-decoration: none;
 }

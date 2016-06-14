@@ -13,7 +13,6 @@ router.route('/tickets')
         });
     })
     .post((req, res) => {
-        console.log(req.body);
         Ticket.create({
             summary: req.body.summary,
             description: req.body.description,

@@ -14,17 +14,17 @@
         <script src="main.js"></script>
     </head>
     <body>
-        <main class="container">
+        <main class="container" ng-controller="RootController">
             <header class="row">
                 <h1 class="pull-xs-left">
                     <a href="/">It's a feature</a>
                 </h1>
                 <ul class="nav nav-pills pull-xs-right">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#/tickets">Home</a>
+                        <a ng-class="{active: name == 'ticketList'}" class="nav-link" href="#/tickets">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#/add">Add a ticket</a>
+                        <a ng-class="{active: name == 'ticketAdd'}" class="nav-link" href="#/add">Add a ticket</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
