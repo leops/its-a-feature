@@ -6,6 +6,14 @@ angular.module('loginForm', [])
         }
     });
 
+angular.module('ticketAdd', [])
+    .component('ticketAdd', {
+        templateUrl: 'add.html',
+        controller: function TicketAddController() {
+            // TODO
+        }
+    });
+
 angular.module('ticketList', [])
     .component('ticketList', {
         templateUrl: 'list.html',
@@ -28,11 +36,14 @@ angular.module('ticketDetail', ['ngRoute'])
         }]
     });
 
-angular.module('trackApp', ['ngRoute', 'loginForm', 'ticketList', 'ticketDetail'])
+angular.module('trackApp', ['ngRoute', 'loginForm', 'ticketAdd', 'ticketList', 'ticketDetail'])
     .config(['$locationProvider', '$routeProvider', function config($locationProvider, $routeProvider) {
         $routeProvider
             .when('/login', {
                 template: '<login-form></login-form>'
+            })
+            .when('/add', {
+                template: '<ticket-add></ticket-add>'
             })
             .when('/tickets', {
                 template: '<ticket-list></ticket-list>'
