@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const User = require('./models/user');
+const {
+    compare
+} = require('bcrypt-nodejs');
 
 const app = express();
 
@@ -24,33 +27,21 @@ app.post('/login', (req, res) => {
     User.findOne({
         username
     }).then(user => {
-        console.log(user);
+        if(user === null){
+            res.redirect('/#/login');
+        }
+        compare(password, user.password, (err, res) => {
+            if (err) {
+                res.redirect('/#/login');
+            } else {
+                res.redirect('/');
+            }
+        });
+
     }).catch(err => {
         res.status(500).end();
-    })
-    res.send('Hello World!');
+    });
 });
-
-/*const {
-    hash,
-    compare
-} = require('bcrypt-nodejs');
-
-hash(data, salt, progress, (err, res) => {
-    if (err) {
-        reject(err);
-    } else {
-        resolve(res);
-    }
-});
-
-compare(data, encrypted, (err, res) => {
-    if (err) {
-        reject(err);
-    } else {
-        resolve(res);
-    }
-});*/
 
 app.listen(3000, () => {
     console.log('Server listening on port 3000');
