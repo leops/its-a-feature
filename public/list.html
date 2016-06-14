@@ -1,7 +1,22 @@
-<div>
-	<div ng-repeat="ticket in $ctrl.tickets">
-		{{ticket.summary}}
-		<a href="/#/tickets/{{ticket.id}}">Details</a>
-	</div>	
-
-</div>
+<table class="table table-striped">
+	<thead>
+	    <tr>
+	      <th>#</th>
+	      <th>Title</th>
+	      <th>Priority</th>
+	      <th>Reported by</th>
+	      <th>Status</th>
+	      <th>Details</th>
+	    </tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="ticket in $ctrl.tickets">
+			<td> {{ticket_id}} </td>
+			<td>{{ticket.summary}}</td>
+			<td>{{ticket.priority}}</td>
+			<td>{{ticket.reporter}}</td>
+			<td>{{ticket.status}}</td>
+			<td><a href="/#/tickets/{{ticket_id}}">Details</a></td>
+		</tr>
+	</tbody>
+</table>
