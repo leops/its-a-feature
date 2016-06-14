@@ -1,5 +1,7 @@
 <div>
-	<div ng-repeat="ticket in tickets">
+	<div ng-repeat="ticket in $ctrl.tickets">
 		{{ticket.summary}}
+		<a href="/#/tickets/{{ticket.id}}">Details</a>
 	</div>	
+
 </div>
