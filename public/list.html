@@ -14,7 +14,7 @@
 			<td>{{ticket._id}} </td>
 			<td>{{ticket.summary}}</td>
 			<td>{{ticket.priority}}</td>
-			<td>{{ticket.reporter}}</td>
+			<td>{{ticket.reporter.firstName}} {{ticket.reporter.lastName}}</td>
 			<td>{{ticket.status}}</td>
 			<td><a href="/#/tickets/{{ticket._id}}">Details</a></td>
 		</tr>

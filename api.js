@@ -8,11 +8,23 @@ module.exports = router = express.Router();
 
 router.route('/tickets')
     .get((req, res) => {
-        Ticket.find().then(docs => {
-            res.json(docs);
-        });
+        Ticket.find()
+            .populate('reporter')
+            .populate('developer')
+            .then(data => {
+                res.json(data);
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).end();
+            });
     })
     .post((req, res) => {
+        if (!req.body.summary || !req.body.description || !req.body.priority) {
+            res.status(400).end();
+            return;
+        }
+
         Ticket.create({
             summary: req.body.summary,
             description: req.body.description,
@@ -21,7 +33,9 @@ router.route('/tickets')
             creationDate: new Date(),
             reporter: req.session.user
         }).then(({_id}) => {
-            res.redirect(`/#/tickets/${_id}`);
+            res.json({
+                id: _id
+            });
         }).catch(err => {
             console.error(err);
             res.status(500).end();

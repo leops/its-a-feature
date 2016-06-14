@@ -9,9 +9,24 @@ angular.module('loginForm', [])
 angular.module('ticketAdd', [])
     .component('ticketAdd', {
         templateUrl: 'add.html',
-        controller: function TicketAddController() {
+        controller: ['$http', '$location', function TicketAddController($http, $location) {
             this.name = 'ticketAdd';
-        }
+
+            this.summary = '';
+            this.priority = '';
+            this.description = '';
+            this.onSubmit = function() {
+                $http.post('/api/tickets', JSON.stringify({
+                    summary: this.summary,
+                    priority: this.priority,
+                    description: this.description,
+                })).then(res => {
+                    $location.url(`/tickets/${res.data.id}`);
+                }).catch(err => {
+                    console.error(err);
+                });
+            };
+        }]
     });
 
 angular.module('ticketList', [])
