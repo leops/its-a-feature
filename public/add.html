@@ -8,23 +8,24 @@
         <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
     </head>
     <body>
-        <form>
+        <form action="api/tickets" method="post">
           <fieldset class="form-group">
             <label for="formGroupExampleInput">Summary</label>
-            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Summary">
+            <input type="text" class="form-control" id="formGroupExampleInput" name="summary" placeholder="Summary">
           </fieldset>
           <fieldset class="form-group">
             <label for="formGroupExampleInput2">Description</label>
-            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Description">
+            <input type="text" class="form-control" id="formGroupExampleInput2" name="description" placeholder="Description">
           </fieldset>
-          <select class="c-select">
+          <select class="c-select" name="priority">
               <option selected>Ticket Priority</option>
-              <option value="1">TRIVIAL</option>
-              <option value="2">MINOR</option>
-              <option value="3">MAJOR</option>
-              <option value="4">CRITICAL</option>
-              <option value="5">BLOCKER</option>
+              <option value="trivial">TRIVIAL</option>
+              <option value="minor">MINOR</option>
+              <option value="major">MAJOR</option>
+              <option value="critical">CRITICAL</option>
+              <option value="blocker">BLOCKER</option>
             </select>
+            <input type="submit" name="submit" value="Add">
         </form>
 
     </body>

@@ -13,17 +13,16 @@ router.route('/tickets')
         });
     })
     .post((req, res) => {
+        console.log(req.body);
         Ticket.create({
             summary: req.body.summary,
-            description: req.body.summary,
+            description: req.body.description,
             priority: req.body.priority.toUpperCase(),
             status: 'NEW',
             creationDate: new Date(),
             reporter: req.session.user
         }).then(({_id}) => {
-            res.status(200).json({
-                id: _id
-            });
+            res.redirect(`/#/tickets/${_id}`);
         }).catch(err => {
             console.error(err);
             res.status(500).end();
