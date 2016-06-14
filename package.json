@@ -6,7 +6,6 @@
   },
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^3.3.6",
     "express": "^4.13.4"
   }
 }
