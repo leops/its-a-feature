@@ -11,12 +11,12 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="ticket in $ctrl.tickets">
-			<td> {{ticket_id}} </td>
+			<td>{{ticket._id}} </td>
 			<td>{{ticket.summary}}</td>
 			<td>{{ticket.priority}}</td>
 			<td>{{ticket.reporter}}</td>
 			<td>{{ticket.status}}</td>
-			<td><a href="/#/tickets/{{ticket_id}}">Details</a></td>
+			<td><a href="/#/tickets/{{ticket._id}}">Details</a></td>
 		</tr>
 	</tbody>
 </table>
