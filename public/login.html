@@ -1,48 +1,11 @@
-<!DOCTYPE html>
-<html ng-app>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>It s a feature</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
-        <link rel="stylesheet" href="./styles.css">
-    </head>
-    <body>
-        <main class="container">
-            <header class="row">
-                <h1 class="pull-xs-left">
-                    <a href="/">It's a feature</a>
-                </h1>
-                <ul class="nav nav-pills pull-xs-right">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/add">Add a ticket</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/all">All tickets</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Logout</a>
-                    </li>
-                </ul>
-            </header>
-            <section class="row">
-                <form action="login.html" method="post">
-                    <fieldset class="form-group">
-                        <label for="username">Username :</label>
-                        <input type="text" class="form-control" id="username" placeholder="Username">
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <label for="password">Password :</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
-                    </fieldset>
-                    <input type="submit" name="submit" value="Login" class="btn btn-primary">
-                </form>
-            </section>
-        </main>
-    </body>
-</html>
+<form action="/login" method="post">
+    <fieldset class="form-group">
+        <label for="username">Username :</label>
+        <input type="text" class="form-control" id="username" placeholder="Username">
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="password">Password :</label>
+        <input type="password" class="form-control" id="password" placeholder="Password">
+    </fieldset>
+    <input type="submit" name="submit" value="Login" class="btn btn-primary">
+</form>
