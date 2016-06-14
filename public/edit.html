@@ -1,14 +1,22 @@
-<html>
-    <head>
-        <title>Edit ticket</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-        <script src='app/main.js'></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
-    </head>
-    <body>
-    
-
-    </body>
-</html>
+<form action="/api/tickets" method="post">
+    <fieldset class="form-group">
+        <label for="summary">Summary</label>
+        <input ng-model="$ctrl.ticket.summary" type="text" class="form-control" id="summary" name="summary" placeholder="Summary">
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="description">Description</label>
+        <input ng-model="$ctrl.ticket.description" type="text" class="form-control" id="description" name="description" placeholder="Description">
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="priority">Ticket Priority</label>
+        <select  ng-model="$ctrl.ticket.priority" class="form-control" id="priority" name="priority">
+            <option value="trivial">TRIVIAL</option>
+            <option value="minor">MINOR</option>
+            <option value="major">MAJOR</option>
+            <option value="critical">CRITICAL</option>
+            <option value="blocker">BLOCKER</option>
+        </select>
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Edit</button>
+    <button type="cancel" class="btn btn-primary">Cancel</button>
+</form>
