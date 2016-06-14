@@ -1,21 +1,34 @@
-<div>
-	<div>
-		Ticket# {{$ctrl.ticket._id}}
+<div class="card text-xs-center">
+		<div class="card-header">
+			<h3> Ticket# {{$ctrl.ticket._id}}</h3>
+			<h1>{{$ctrl.ticket.summary}}</h1>
+			<h10>Opened : {{$ctrl.ticket.creationDate}}</h10>
+		</div>
 
-		{{$ctrl.ticket.summary}}
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="card-block">
+					<div class="card-text">Reported by : {{$ctrl.ticket.reporter.firstname}}</div>
+					<div class="card-text">Priority : {{$ctrl.ticket.priority}}</div>
+				</div>
+			</div>
 
-		{{$ctrl.ticket.creationDate}}
+			<div class="col-sm-6">
+				<div class="card-block">
+					<div class="card-text">Owned by : {{$ctrl.ticket.developer.firstname}}</div>
+					<div class="card-text">Status : {{$ctrl.ticket.status}}</div>
+				</div>
+			</div>
+		</div>
+	
+		<div class="card-block">
+		    <div class="card-text">Description :</div>
+			<div class="card-text">{{$ctrl.ticket.description}}</div>
+		</div>	
+</div>
 
-		{{$ctrl.ticket.reporter.firstname}}
-
-		{{$ctrl.ticket.developer.firstname}}
-
-		{{$ctrl.ticket.priority}}
-
-		{{$ctrl.ticket.status}}
-
-		Description :
-
-		{{$ctrl.ticket.description}}
+<div class="card text-xs-center">
+	<div class="card-header">
+		<h3>Commentaires</h3>
 	</div>
 </div>
