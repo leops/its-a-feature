@@ -34,6 +34,7 @@ app.post('/login', (req, res) => {
             if (err || !isValid) {
                 res.redirect('/#/login');
             } else {
+                req.session.user = user._id;
                 res.redirect('/#');
             }
         });
@@ -41,6 +42,11 @@ app.post('/login', (req, res) => {
     }).catch(err => {
         res.status(500).end();
     });
+});
+
+app.get('/logout', (req, res) => {
+    req.session = null;
+    res.redirect('/#/login');
 });
 
 app.listen(3000, () => {
