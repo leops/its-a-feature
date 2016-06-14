@@ -22,19 +22,19 @@ app.use(cookieSession({
 const apiRouter = require('./api');
 app.use('/api', apiRouter);
 app.post('/login', (req, res) => {
-    var username = req.body.username;
-    var password = req.body.password;
+    const name = req.body.username;
+    const password = req.body.password;
     User.findOne({
-        username
+        name
     }).then(user => {
         if(user === null){
             res.redirect('/#/login');
         }
-        compare(password, user.password, (err, res) => {
-            if (err) {
+        compare(password, user.password, (err, isValid) => {
+            if (err || !isValid) {
                 res.redirect('/#/login');
             } else {
-                res.redirect('/');
+                res.redirect('/#');
             }
         });
 
