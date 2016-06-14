@@ -18,8 +18,14 @@ const Ticket = new Schema({
         enum: ['NEW', 'IN PROGRESS', 'DONE']
     },
     creationDate: Date,
-    reporter: Schema.Types.ObjectId,
-    developer: Schema.Types.ObjectId,
+    reporter: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    },
+    developer: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    },
     comments: [Comment]
 });
 

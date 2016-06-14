@@ -30,8 +30,6 @@ angular.module('ticketDetail', ['ngRoute'])
 
 angular.module('trackApp', ['ngRoute', 'loginForm', 'ticketList', 'ticketDetail'])
     .config(['$locationProvider', '$routeProvider', function config($locationProvider, $routeProvider) {
-        $locationProvider.hashPrefix('!');
-
         $routeProvider
             .when('/login', {
                 template: '<login-form></login-form>'
