@@ -33,7 +33,8 @@ module.exports = io => {
                         res.status(403).end();
                     } else {
                         const token = jwt.sign({
-                            sub: user._id
+                            sub: user._id,
+                            role: user.type
                         }, 'secret');
                         res.json({
                             token

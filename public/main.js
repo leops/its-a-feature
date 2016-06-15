@@ -70,7 +70,9 @@ angular.module('loginForm', ['session'])
                 })).then(res => {
                     const token = res.data.token;
                     $rootScope.token = token;
+                    $rootScope.role = JSON.parse(atob(token.split('.')[1])).role;
                     Session.setToken(token);
+                    console.log(token);
                     $location.url('/new');
                 }).catch(err => {
                     this.status = err.status;
@@ -228,6 +230,10 @@ angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticket
     }])
     .controller('RootController', ['$rootScope', '$location', 'Session', 'Socket', function RootController($rootScope, $location, Session, Socket) {
         $rootScope.token = Session.getToken() || null;
+        if($rootScope.token !== null){
+            $rootScope.role = JSON.parse(atob($rootScope.token.split('.')[1])).role;
+            console.log($rootScope.role);
+        }
         $rootScope.onLogout = () => {
             $rootScope.token = null;
             Session.deleteToken();
