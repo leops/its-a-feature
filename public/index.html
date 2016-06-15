@@ -21,13 +21,13 @@
                     <a href="/">It's a feature</a>
                 </h1>
                 <ul class="nav nav-pills pull-xs-right">
-                    <li class="nav-item">
+                    <li ng-if="token !== null" class="nav-item">
                         <a ng-class="{active: name == 'ticketNew'}" class="nav-link" href="#/new">New tickets</a>
                     </li>
-                    <li class="nav-item">
+                    <li ng-if="token !== null" class="nav-item">
                         <a ng-class="{active: name == 'ticketList'}" class="nav-link" href="#/tickets">All tickets</a>
                     </li>
-                    <li class="nav-item">
+                    <li ng-if="token !== null && role !== 'Developer'" class="nav-item">
                         <a ng-class="{active: name == 'ticketAdd'}" class="nav-link" href="#/add">Add a ticket</a>
                     </li>
                     <li class="nav-item" ng-if="token !== null">
