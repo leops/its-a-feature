@@ -27,6 +27,9 @@
                     <li ng-if="token !== null" class="nav-item">
                         <a ng-class="{active: name == 'ticketList'}" class="nav-link" href="#/tickets">All tickets</a>
                     </li>
+                    <li ng-if="token !== null && role === 'Developer'" class="nav-item">
+                        <a ng-class="{active: name == 'ticketOwn'}" class="nav-link" href="#/own">My tickets</a>
+                    </li>
                     <li ng-if="token !== null && role !== 'Developer'" class="nav-item">
                         <a ng-class="{active: name == 'ticketAdd'}" class="nav-link" href="#/add">Add a ticket</a>
                     </li>

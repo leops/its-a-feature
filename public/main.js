@@ -206,7 +206,7 @@ angular.module('ticketDetail', ['ngRoute'])
 angular.module('ticketEdit', ['ngRoute'])
     .component('ticketEdit', {
         templateUrl: 'edit.html',
-        controller: ['$rootScope', '$http', '$routeParams', function TicketEditController($rootScope, $http, $routeParams) {
+        controller: ['$rootScope', '$http', '$routeParams', '$location', function TicketEditController($rootScope, $http, $routeParams, $location) {
             $rootScope.name = 'ticketEdit';
 
             $http.get('/api/tickets/' + $routeParams.ticket)
@@ -215,14 +215,14 @@ angular.module('ticketEdit', ['ngRoute'])
                 });
 
             this.onSubmit = () => {
-                $http.patch('/api/tickets' + this.ticket._id, JSON.stringify({
+                $http.patch('/api/tickets/' + this.ticket._id, JSON.stringify({
                     summary: this.ticket.summary,
                     priority: this.ticket.priority,
                     description: this.ticket.description,
                     token: $rootScope.token
                 }))
                     .then(res => {
-                        $location.url(`/tickets/${res.data.id}`);
+                        $location.url(`/tickets/${res.data._id}`);
                     })
                     .catch(err => {
                         console.error(err);
