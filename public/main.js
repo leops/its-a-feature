@@ -67,7 +67,7 @@ angular.module('loginForm', ['session'])
                     .then(res => {
                         const token = res.data.token;
                         $rootScope.token = token;
-                        $rootScope.role = JSON.parse(atob(token.split('.')[1])).role;
+                        $rootScope.tokenData = JSON.parse(atob(token.split('.')[1]));
                         Session.setToken(token);
                         $location.url('/new');
                     })
@@ -112,14 +112,17 @@ angular.module('ticketList', [])
     .component('ticketList', {
         templateUrl: 'list.html',
         bindings: {
-            filter: '='
+            filter: '@'
         },
         controller: ['$rootScope', '$http', '$location', function TicketListController($rootScope, $http, $location) {
-            if (this.filter) {
+            if (this.filter === 'new') {
                 $rootScope.name = 'ticketNew';
                 this.newFilter = {
                     status: 'NEW'
                 };
+            } else if (this.filter === 'own') {
+                $rootScope.name = 'ticketOwn';
+                this.newFilter = ticket => ticket.developer && ticket.developer._id === $rootScope.tokenData.sub;
             } else {
                 $rootScope.name = 'ticketList';
                 this.newFilter = () => true;
@@ -244,7 +247,10 @@ angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticket
                 template: '<ticket-list></ticket-list>'
             })
             .when('/new', {
-                template: '<ticket-list filter="true"></ticket-list>'
+                template: '<ticket-list filter="new"></ticket-list>'
+            })
+            .when('/own', {
+                template: '<ticket-list filter="own"></ticket-list>'
             })
             .when('/tickets/:ticket', {
                 template: '<ticket-detail></ticket-detail>'
@@ -257,8 +263,7 @@ angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticket
     .controller('RootController', ['$rootScope', '$location', '$timeout', 'Session', 'Socket', function RootController($rootScope, $location, $timeout, Session, Socket) {
         $rootScope.token = Session.getToken() || null;
         if($rootScope.token !== null){
-            $rootScope.role = JSON.parse(atob($rootScope.token.split('.')[1])).role;
-            console.log($rootScope.role);
+            $rootScope.tokenData = JSON.parse(atob($rootScope.token.split('.')[1]));
         }
 
         $rootScope.onLogout = () => {
