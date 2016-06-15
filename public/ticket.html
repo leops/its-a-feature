@@ -1,22 +1,22 @@
 <div class="card">
 		<div class="card-header  text-xs-center">
-			<h3> Ticket# {{$ctrl.ticket._id}}</h3>
+			<h2> Ticket #{{$ctrl.ticket._id}}</h3>
 			<h1>{{$ctrl.ticket.summary}}</h1>
-			<h10>Opened : {{$ctrl.ticket.creationDate}}</h10>
+			<p>Opened : {{$ctrl.ticket.creationDate | date:'short'}}</p>
 		</div>
 
 		<div class="card-block text-xs-center">
 			<div class="col-sm-6">
 				<div class="card-block">
-					<div class="card-text">Reported by : {{$ctrl.ticket.reporter.firstName}} {{$ctrl.ticket.reporter.lastName}}</div>
-					<div class="card-text">Priority : {{$ctrl.ticket.priority}}</div>
+					<div class="card-text">Reported by: {{$ctrl.ticket.reporter.firstName}} {{$ctrl.ticket.reporter.lastName}}</div>
+					<div class="card-text">Priority: {{$ctrl.ticket.priority}}</div>
 				</div>
 			</div>
 
 			<div class="col-sm-6">
 				<div class="card-block">
-					<div class="card-text">Owned by : {{$ctrl.ticket.developer.firstName}} {{$ctrl.ticket.developer.lastName}}</div>
-					<div class="card-text">Status : {{$ctrl.ticket.status}}</div>
+					<div class="card-text">Owned by: {{$ctrl.ticket.developer.firstName}} {{$ctrl.ticket.developer.lastName}}</div>
+					<div class="card-text">Status: {{$ctrl.ticket.status}}</div>
 				</div>
 			</div>
 		</div>
@@ -24,11 +24,10 @@
 	    <div class="card-text text-xs-center">Description :</div>
 		<div class="card-text text-xs-center">{{$ctrl.ticket.description}}</div>
 
-		
 		<div class="card-block">
-			<a href="/tickets/:id/edit" class="btn btn-primary btn-sm active" role="button">Edit ticket</a>
-			<a href="/tickets/:id/delete" class="btn btn-primary btn-sm active" role="button">Delete ticket</a>
-			<a href="/#/tickets/{{$ctrl.ticket._id}}" class="card-link" ng-click="$ctrl.onClick()">{{($ctrl.ticket.status === 'DONE')? null : (($ctrl.ticket.status === 'NEW')? 'Start working' : 'Stop working')}}</a>
+			<a href="/#/tickets/{{$ctrl.ticket._id}}/edit" class="card-link">Edit ticket</a>
+			<a class="card-link" ng-click="$ctrl.onDelete()">Delete ticket</a>
+			<a class="card-link" ng-click="$ctrl.onAssign()">{{($ctrl.ticket.status === 'DONE')? null : (($ctrl.ticket.status === 'NEW')? 'Start working' : 'Stop working')}}</a>
 		</div>
 </div>
 
@@ -38,37 +37,24 @@
 	</div>
 </div>
 
-
-<div class="card text-xs-center">
-	<div class="row" ng-repeat="comment in $ctrl.ticket.comments">
+<div class="card text-xs-center" ng-repeat="comment in $ctrl.ticket.comments">
+	<div class="card-block row">
 		<div class="col-sm-6">
-			<div class="card-block">
-				<div class="card-text">From : {{$ctrl.ticket.reporter.firstname}}</div>
-			</div>
+			<p class="card-text">From: {{comment.author.firstName}} {{comment.author.lastName}}</p>
 		</div>
 		<div class="col-sm-6">
-			<div class="card-block">
-				<div class="card-text">Posted : {{comment.creationDate}}</div>
-			</div>
+			<p class="card-text">Posted: {{comment.creationDate | date:'short'}}</p>
 		</div>
-		<div class="card text-xs-center">
-			<div>{{comment.content}}</div>
-		</div>
-	</div>			
+	</div>
+	<p class="card-text text-xs-center">{{comment.content}}</div></p>
 </div>
 
 <div class="card text-xs-center">
-	<form ng-submit="$ctrl.onSubmit()">
-	  	<fieldset class="form-group">
-        	<label for="New comment">Add a comment</label>
-        </fieldset>
+	<form class="card-block" ng-submit="$ctrl.onSubmit()">
         <fieldset class="form-group">
+			<label for="New comment">Add a comment</label>
         	<input type="text" class="form-control" id="comment" ng-model="$ctrl.content">
         </fieldset>
-        <fieldset class="form-group">
-        	<button type="submit" class="btn btn-primary btn-sm active">Add comment</button>
-    	</fieldset>
+        <button type="submit" class="btn btn-primary">Add comment</button>
 	</form>
 </div>
-
-

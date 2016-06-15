@@ -1,4 +1,4 @@
-<table class="table table-striped">
+<table class="table table-striped table-hover">
 	<thead>
 	    <tr>
 	      <th>#</th>
@@ -6,11 +6,10 @@
 	      <th>Priority</th>
 	      <th>Reported by</th>
 	      <th>Status</th>
-	      <th>Details</th>
 	    </tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="(key, ticket) in $ctrl.tickets | filter:$ctrl.newFilter">
+		<tr ng-repeat="(key, ticket) in $ctrl.tickets | filter:$ctrl.newFilter" ng-click="$ctrl.showDetails(ticket._id)">
 			<td>{{key}}</td>
 			<td>{{ticket.summary}}</td>
 			<td>
@@ -29,7 +28,6 @@
 					'label-default': (ticket.status === 'DONE')
 				}">{{ticket.status}}</span>
 			</td>
-			<td><a href="/#/tickets/{{ticket._id}}">Details</a></td>
 		</tr>
 	</tbody>
 </table>

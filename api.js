@@ -20,31 +20,33 @@ module.exports = io => {
 
             User.findOne({
                 name
-            }).then(user => {
-                if(user === null){
-                    res.status(404).end();
-                }
-
-                compare(password, user.password, (err, isValid) => {
-                    if (err) {
-                        console.error(err);
-                        res.status(500).end();
-                    } else if(!isValid) {
-                        res.status(403).end();
-                    } else {
-                        const token = jwt.sign({
-                            sub: user._id
-                        }, 'secret');
-                        res.json({
-                            token
-                        });
+            })
+                .then(user => {
+                    if(user === null){
+                        res.status(404).end();
                     }
-                });
 
-            }).catch(err => {
-                console.error(err);
-                res.status(500).end();
-            });
+                    compare(password, user.password, (err, isValid) => {
+                        if (err) {
+                            console.error(err);
+                            res.status(500).end();
+                        } else if(!isValid) {
+                            res.status(403).end();
+                        } else {
+                            const token = jwt.sign({
+                                sub: user._id
+                            }, 'secret');
+                            res.json({
+                                token
+                            });
+                        }
+                    });
+
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(500).end();
+                });
         });
 
     router.route('/tickets')
@@ -52,6 +54,7 @@ module.exports = io => {
             Ticket.find()
                 .populate('reporter')
                 .populate('developer')
+                .populate('comments.author')
                 .then(data => {
                     res.json(data);
                 })
@@ -77,17 +80,15 @@ module.exports = io => {
                 status: 'NEW',
                 creationDate: new Date(),
                 reporter: sub
-            }).then(({_id}) => {
-                io.emit('new-post', {
-                    id: _id
+            })
+                .then(post => {
+                    io.emit('new-post', post);
+                    res.json(post);
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(500).end();
                 });
-                res.json({
-                    id: _id
-                });
-            }).catch(err => {
-                console.error(err);
-                res.status(500).end();
-            });
         });
 
     router.route('/tickets/:ticket')
@@ -95,30 +96,52 @@ module.exports = io => {
             Ticket.findById(req.params.ticket)
                 .populate('reporter')
                 .populate('developer')
+                .populate('comments.author')
                 .then(docs => {
                     res.json(docs);
+                }).catch(err => {
+                    console.error(err);
+                    res.status(500).end();
                 });
         })
         .post((req, res) => {
             Ticket.findById(req.params.ticket)
                 .then(ticket => {
+                    const {
+                        sub
+                    } = jwt.verify(req.body.token, 'secret');
+
                     ticket.comments.push({
                         content: req.body.content,
-                        creationDate: new Date()
+                        creationDate: new Date(),
+                        author: sub
                     });
 
                     return ticket.save();
-                }).then(() => {
-                    console.log('comment', arguments);
-                    io.emit('new-comment', {
-                        id: '0'
-                    });
+                })
+                .then(() =>
+                    Ticket.findById(req.params.ticket)
+                        .populate('comments.author')
+                )
+                .then(ticket => {
+                    const comment = ticket.comments[ticket.comments.length - 1];
+                    io.emit('new-comment', comment);
+                    res.json(comment);
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(500).end();
                 });
         })
         .patch((req, res) => {
-            Ticket.findByIdAndUpdate(req.params.ticket, req.body)
-                .then(() => {
-                    res.status(200).end();
+            Ticket.findByIdAndUpdate(req.params.ticket, req.body, {
+                new: true
+            })
+                .populate('reporter')
+                .populate('developer')
+                .populate('comments.author')
+                .then(ticket => {
+                    res.json(ticket);
                 }).catch(err => {
                     console.error(err);
                     res.status(500).end();
@@ -128,7 +151,8 @@ module.exports = io => {
             Ticket.findByIdAndRemove(req.params.ticket)
                 .then(() => {
                     res.status(200).end();
-                }).catch(err => {
+                })
+                .catch(err => {
                     console.error(err);
                     res.status(500).end();
                 });

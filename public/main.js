@@ -29,11 +29,8 @@ angular.module('socket', [])
             },
             on(eventName, callback) {
                 if (this.socket != null) {
-                    this.socket.on(eventName, () => {
-                        const args = arguments;
-                        $rootScope.$apply(() => {
-                            callback.apply(undefined, args);
-                        });
+                    this.socket.on(eventName, (...args) => {
+                        $rootScope.$apply(() => callback(...args));
                     });
                 } else {
                     this.events.push(arguments);
@@ -41,11 +38,10 @@ angular.module('socket', [])
             },
             emit(eventName, data, callback) {
                 if (this.socket != null) {
-                    this.socket.emit(eventName, data, () => {
-                        const args = arguments;
+                    this.socket.emit(eventName, data, (...args) => {
                         $rootScope.$apply(() => {
                             if (callback != null) {
-                                callback.apply(undefined, args);
+                                callback(...args);
                             }
                         });
                     });
@@ -67,14 +63,16 @@ angular.module('loginForm', ['session'])
                 $http.post('/api/login', JSON.stringify({
                     username: this.username,
                     password: this.password
-                })).then(res => {
-                    const token = res.data.token;
-                    $rootScope.token = token;
-                    Session.setToken(token);
-                    $location.url('/new');
-                }).catch(err => {
-                    this.status = err.status;
-                });
+                }))
+                    .then(res => {
+                        const token = res.data.token;
+                        $rootScope.token = token;
+                        Session.setToken(token);
+                        $location.url('/new');
+                    })
+                    .catch(err => {
+                        this.status = err.status;
+                    });
             };
 
             if (Session.getToken()) {
@@ -98,11 +96,13 @@ angular.module('ticketAdd', [])
                     priority: this.priority,
                     description: this.description,
                     token: $rootScope.token
-                })).then(res => {
-                    $location.url(`/tickets/${res.data.id}`);
-                }).catch(err => {
-                    console.error(err);
-                });
+                }))
+                    .then(res => {
+                        $location.url(`/tickets/${res.data.id}`);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
             };
         }]
     });
@@ -113,7 +113,7 @@ angular.module('ticketList', [])
         bindings: {
             filter: '='
         },
-        controller: ['$rootScope', '$http', function TicketListController($rootScope, $http) {
+        controller: ['$rootScope', '$http', '$location', function TicketListController($rootScope, $http, $location) {
             if (this.filter) {
                 $rootScope.name = 'ticketNew';
                 this.newFilter = {
@@ -123,6 +123,10 @@ angular.module('ticketList', [])
                 $rootScope.name = 'ticketList';
                 this.newFilter = () => true;
             }
+
+            this.showDetails = id => {
+                $location.url(`/tickets/${id}`);
+            };
 
             $http.get('/api/tickets')
                 .then(response => {
@@ -134,7 +138,7 @@ angular.module('ticketList', [])
 angular.module('ticketDetail', ['ngRoute'])
     .component('ticketDetail', {
         templateUrl: 'ticket.html',
-        controller: ['$rootScope', '$http', '$routeParams', function TicketDetailController($rootScope, $http, $routeParams) {
+        controller: ['$rootScope', '$http', '$routeParams', '$location', function TicketDetailController($rootScope, $http, $routeParams, $location) {
             $rootScope.name = 'ticketDetail';
 
             this.content = '';
@@ -144,35 +148,56 @@ angular.module('ticketDetail', ['ngRoute'])
                 $http.post('/api/tickets/' + $routeParams.ticket, JSON.stringify({
                     content: this.content,
                     token: $rootScope.token
-                })).then(res => { console.log(res);
-                    this.ticket.comments.push({
-                    content,creationDate: new Date()})
-                }).catch(err => {
-                    console.error(err);
-                });
+                }))
+                    .then(res => {
+                        this.ticket.comments.push(res.data);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
                 this.content='';
             };
 
-            this.onClick = () => {
+            this.onDelete = () => {
+                $http.delete('/api/tickets/' + this.ticket._id)
+                    .then(res => {
+                        $location.url('/tickets');
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+
+                return false;
+            };
+
+            this.onAssign = () => {
                 const token = $rootScope.token;
                 const {sub} = JSON.parse(atob(token.split('.')[1]));
+
                 const ticket = this.ticket;
-                if(ticket.status === 'NEW'){
+                if(ticket.status === 'NEW') {
                     ticket.status = 'IN PROGRESS';
-                }else if(ticket.status === 'IN PROGRESS'){
+                } else if (ticket.status === 'IN PROGRESS') {
                     ticket.status = 'DONE';
                 }
 
                 $http.patch('/api/tickets/' + ticket._id, JSON.stringify({
                     status: ticket.status,
                     developer: sub
-                }));
+                }))
+                    .then(res => {
+                        this.ticket = res.data;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+
+                return false;
             };
 
             $http.get('/api/tickets/' + $routeParams.ticket)
                 .then(response => {
                     this.ticket = response.data;
-                    console.log(this.ticket);
                 });
         }]
     });
@@ -194,11 +219,13 @@ angular.module('ticketEdit', ['ngRoute'])
                     priority: this.priority,
                     description: this.description,
                     token: $rootScope.token
-                })).then(res => {
-                    $location.url(`/tickets/${res.data.id}`);
-                }).catch(err => {
-                    console.error(err);
-                });
+                }))
+                    .then(res => {
+                        $location.url(`/tickets/${res.data.id}`);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
             };
         }]
     });
@@ -226,7 +253,7 @@ angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticket
             })
             .otherwise('/login');
     }])
-    .controller('RootController', ['$rootScope', '$location', 'Session', 'Socket', function RootController($rootScope, $location, Session, Socket) {
+    .controller('RootController', ['$rootScope', '$location', '$timeout', 'Session', 'Socket', function RootController($rootScope, $location, $timeout, Session, Socket) {
         $rootScope.token = Session.getToken() || null;
         $rootScope.onLogout = () => {
             $rootScope.token = null;
@@ -241,12 +268,16 @@ angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticket
 
         Socket.init();
         $rootScope.notifications = [];
-        Socket.on('new-post', () => {
-            console.log(arguments);
-            $rootScope.notifications.push('New ticket');
+        Socket.on('new-post', ticket => {
+            const id = $rootScope.notifications.push(`${ticket.author.firstName} ${ticket.author.lastName} posted a new ticket`);
+            $timeout(() => {
+                $rootScope.notifications.splice(id - 1);
+            }, 5000);
         });
-        Socket.on('new-comment', () => {
-            console.log(arguments);
-            $rootScope.notifications.push('New comment');
+        Socket.on('new-comment', comment => {
+            const id = $rootScope.notifications.push(`${comment.author.firstName} ${comment.author.lastName} posted a new comment`);
+            $timeout(() => {
+                $rootScope.notifications.splice(id - 1);
+            }, 5000);
         });
     }]);

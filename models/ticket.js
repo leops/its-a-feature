@@ -3,7 +3,11 @@ const {Schema} = mongoose;
 
 const Comment = new Schema({
     content: String,
-    creationDate: Date
+    creationDate: Date,
+    author: {
+        type: Schema.ObjectId,
+        ref: 'User'
+    }
 });
 
 const Ticket = new Schema({
