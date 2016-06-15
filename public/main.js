@@ -155,14 +155,9 @@ angular.module('ticketEdit', ['ngRoute'])
                     this.ticket = response.data;
                 });
 
-                this.onSubmit = () => {
-                    $http.post('/api/tickets', JSON.stringify({
-                        summary: this.summary,
-                        priority: this.priority,
-                        description: this.description,
-                        token: $rootScope.token
-                    })).then(res => {
-                        $location.url(`/tickets/${res.data.id}`);
+            this.onSubmit = () => {
+                console.log('Submit');
+            };
         }]
     });
 
