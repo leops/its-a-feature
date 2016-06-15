@@ -18,8 +18,7 @@
 					'label-info': (ticket.priority === 'TRIVIAL'),
 					'label-success': (ticket.priority === 'MINOR'),
 					'label-warning': (ticket.priority === 'MAJOR'),
-					'label-danger': (ticket.priority === 'CRITICAL'),
-					'label-danger': (ticket.priority === 'BLOCKER')
+					'label-danger': (ticket.priority === 'CRITICAL') || (ticket.priority === 'BLOCKER')
 				}">{{ticket.priority}}</span>
 			</td>
 			<td>{{ticket.reporter.firstName}} {{ticket.reporter.lastName}}</td>

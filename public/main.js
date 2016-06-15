@@ -137,9 +137,26 @@ angular.module('ticketDetail', ['ngRoute'])
         controller: ['$rootScope', '$http', '$routeParams', function TicketDetailController($rootScope, $http, $routeParams) {
             $rootScope.name = 'ticketDetail';
 
+            this.onClick = () => {
+                const token = $rootScope.token;
+                const {sub} = JSON.parse(atob(token.split('.')[1]));
+                const ticket = this.ticket;
+                if(ticket.status === 'NEW'){
+                    ticket.status = 'IN PROGRESS';
+                }else if(ticket.status === 'IN PROGRESS'){
+                    ticket.status = 'DONE';
+                }
+
+                $http.patch('/api/tickets/' + ticket._id, JSON.stringify({
+                    status: ticket.status,
+                    developer: sub
+                }));
+            };
+
             $http.get('/api/tickets/' + $routeParams.ticket)
                 .then(response => {
                     this.ticket = response.data;
+                    console.log(this.ticket);
                 });
         }]
     });
