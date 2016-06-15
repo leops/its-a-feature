@@ -137,6 +137,22 @@ angular.module('ticketDetail', ['ngRoute'])
         controller: ['$rootScope', '$http', '$routeParams', function TicketDetailController($rootScope, $http, $routeParams) {
             $rootScope.name = 'ticketDetail';
 
+            this.content = '';
+
+            this.onSubmit = () => { 
+                const content = this.content;
+                $http.post('/api/tickets/' + $routeParams.ticket, JSON.stringify({
+                    content: this.content,
+                    token: $rootScope.token
+                })).then(res => { console.log(res);
+                    this.ticket.comments.push({
+                    content,creationDate: new Date()})
+                }).catch(err => {
+                    console.error(err);
+                });
+                this.content='';
+            };
+
             $http.get('/api/tickets/' + $routeParams.ticket)
                 .then(response => {
                     this.ticket = response.data;

@@ -25,10 +25,49 @@
 		    <div class="card-text">Description :</div>
 			<div class="card-text">{{$ctrl.ticket.description}}</div>
 		</div>	
+		<div class="card-block">
+			<a href="/tickets/:id/edit" class="btn btn-primary btn-sm active" role="button">Edit ticket</a>
+			<a href="/tickets/:id/delete" class="btn btn-primary btn-sm active" role="button">Delete ticket</a>
+		</div>
+		
 </div>
 
 <div class="card text-xs-center">
 	<div class="card-header">
 		<h3>Commentaires</h3>
 	</div>
+	
+</div>
+
+
+<div class="card text-xs-center">
+	<div class="row" ng-repeat="comment in $ctrl.ticket.comments">
+		<div class="col-sm-6">
+			<div class="card-block">
+				<div class="card-text">From : {{$ctrl.ticket.reporter.firstname}}</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="card-block">
+				<div class="card-text">Posted : {{comment.creationDate}}</div>
+			</div>
+		</div>
+		<div class="card text-xs-center">
+			<div>{{comment.content}}</div>
+		</div>
+	</div>			
+</div>
+
+<div class="card text-xs-center">
+	<form ng-submit="$ctrl.onSubmit()">
+	  	<fieldset class="form-group">
+        	<label for="New comment">Add a comment</label>
+        </fieldset>
+        <fieldset class="form-group">
+        	<input type="text" class="form-control" id="comment" ng-model="$ctrl.content">
+        </fieldset>
+        <fieldset class="form-group">
+        	<button type="submit" class="btn btn-primary btn-sm active">Add comment</button>
+    	</fieldset>
+	</form>
 </div>
