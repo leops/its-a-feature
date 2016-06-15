@@ -10,12 +10,26 @@
 	    </tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="ticket in $ctrl.tickets | filter:$ctrl.newFilter">
-			<td>{{ticket._id}} </td>
+		<tr ng-repeat="(key, ticket) in $ctrl.tickets | filter:$ctrl.newFilter">
+			<td>{{key}}</td>
 			<td>{{ticket.summary}}</td>
-			<td>{{ticket.priority}}</td>
+			<td>
+				<span class="label" ng-class="{
+					'label-info': (ticket.priority === 'TRIVIAL'),
+					'label-success': (ticket.priority === 'MINOR'),
+					'label-warning': (ticket.priority === 'MAJOR'),
+					'label-danger': (ticket.priority === 'CRITICAL'),
+					'label-danger': (ticket.priority === 'BLOCKER')
+				}">{{ticket.priority}}</span>
+			</td>
 			<td>{{ticket.reporter.firstName}} {{ticket.reporter.lastName}}</td>
-			<td>{{ticket.status}}</td>
+			<td>
+				<span class="label" ng-class="{
+					'label-primary': (ticket.status === 'NEW'),
+					'label-info': (ticket.status === 'IN PROGRESS'),
+					'label-default': (ticket.status === 'DONE')
+				}">{{ticket.status}}</span>
+			</td>
 			<td><a href="/#/tickets/{{ticket._id}}">Details</a></td>
 		</tr>
 	</tbody>
