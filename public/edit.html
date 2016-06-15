@@ -1,4 +1,4 @@
-<form action="/api/tickets" method="post">
+<form ng-submit="$ctrl.onSubmit()">
     <fieldset class="form-group">
         <label for="summary">Summary</label>
         <input ng-model="$ctrl.ticket.summary" type="text" class="form-control" id="summary" name="summary" placeholder="Summary">
