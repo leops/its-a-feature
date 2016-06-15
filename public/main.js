@@ -215,10 +215,10 @@ angular.module('ticketEdit', ['ngRoute'])
                 });
 
             this.onSubmit = () => {
-                $http.post('/api/tickets', JSON.stringify({
-                    summary: this.summary,
-                    priority: this.priority,
-                    description: this.description,
+                $http.patch('/api/tickets' + this.ticket._id, JSON.stringify({
+                    summary: this.ticket.summary,
+                    priority: this.ticket.priority,
+                    description: this.ticket.description,
                     token: $rootScope.token
                 }))
                     .then(res => {
@@ -231,7 +231,7 @@ angular.module('ticketEdit', ['ngRoute'])
         }]
     });
 
-angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticketAdd', 'ticketList', 'ticketDetail'])
+angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticketAdd', 'ticketList', 'ticketDetail', 'ticketEdit'])
     .config(['$routeProvider', function config($routeProvider) {
         $routeProvider
             .when('/login', {
