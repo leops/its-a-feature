@@ -93,6 +93,8 @@ module.exports = io => {
     router.route('/tickets/:ticket')
         .get((req, res) => {
             Ticket.findById(req.params.ticket)
+                .populate('reporter')
+                .populate('developer')
                 .then(docs => {
                     res.json(docs);
                 });

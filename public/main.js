@@ -153,9 +153,26 @@ angular.module('ticketDetail', ['ngRoute'])
                 this.content='';
             };
 
+            this.onClick = () => {
+                const token = $rootScope.token;
+                const {sub} = JSON.parse(atob(token.split('.')[1]));
+                const ticket = this.ticket;
+                if(ticket.status === 'NEW'){
+                    ticket.status = 'IN PROGRESS';
+                }else if(ticket.status === 'IN PROGRESS'){
+                    ticket.status = 'DONE';
+                }
+
+                $http.patch('/api/tickets/' + ticket._id, JSON.stringify({
+                    status: ticket.status,
+                    developer: sub
+                }));
+            };
+
             $http.get('/api/tickets/' + $routeParams.ticket)
                 .then(response => {
                     this.ticket = response.data;
+                    console.log(this.ticket);
                 });
         }]
     });
@@ -217,8 +234,10 @@ angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticket
         $rootScope.notifications = [];
         Socket.on('new-post', () => {
             console.log(arguments);
+            $rootScope.notifications.push('New ticket');
         });
         Socket.on('new-comment', () => {
             console.log(arguments);
+            $rootScope.notifications.push('New comment');
         });
     }]);
