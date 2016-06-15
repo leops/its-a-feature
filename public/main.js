@@ -1,25 +1,62 @@
-angular.module('loginForm', [])
+angular.module('session', [])
+    .factory('Session', function Session($rootScope) {
+        return {
+            setToken(token) {
+                sessionStorage.token = token;
+            },
+            getToken() {
+                return sessionStorage.token;
+            },
+            deleteToken() {
+                delete sessionStorage.token;
+            }
+        };
+    });
+
+angular.module('loginForm', ['session'])
     .component('loginForm', {
         templateUrl: 'login.html',
-        controller: function LoginFormController() {
-            this.name = 'loginForm';
-        }
+        controller: ['$rootScope', '$http', '$location', 'Session', function LoginFormController($rootScope, $http, $location, Session) {
+            $rootScope.name = 'loginForm';
+
+            this.status = null;
+            this.username = '';
+            this.password = '';
+            this.onSubmit = () => {
+                $http.post('/api/login', JSON.stringify({
+                    username: this.username,
+                    password: this.password
+                })).then(res => {
+                    const token = res.data.token;
+                    $rootScope.token = token;
+                    Session.setToken(token);
+                    $location.url('/tickets');
+                }).catch(err => {
+                    this.status = err.status;
+                });
+            };
+
+            if (Session.getToken()) {
+                $location.url('/tickets');
+            }
+        }]
     });
 
 angular.module('ticketAdd', [])
     .component('ticketAdd', {
         templateUrl: 'add.html',
-        controller: ['$http', '$location', function TicketAddController($http, $location) {
-            this.name = 'ticketAdd';
+        controller: ['$rootScope', '$http', '$location', function TicketAddController($rootScope, $http, $location) {
+            $rootScope.name = 'ticketAdd';
 
             this.summary = '';
             this.priority = '';
             this.description = '';
-            this.onSubmit = function() {
+            this.onSubmit = () => {
                 $http.post('/api/tickets', JSON.stringify({
                     summary: this.summary,
                     priority: this.priority,
                     description: this.description,
+                    token: $rootScope.token
                 })).then(res => {
                     $location.url(`/tickets/${res.data.id}`);
                 }).catch(err => {
@@ -32,8 +69,8 @@ angular.module('ticketAdd', [])
 angular.module('ticketList', [])
     .component('ticketList', {
         templateUrl: 'list.html',
-        controller: ['$http', function TicketListController($http) {
-            this.name = 'ticketList';
+        controller: ['$rootScope', '$http', function TicketListController($rootScope, $http) {
+            $rootScope.name = 'ticketList';
 
             $http.get('/api/tickets')
                 .then(response => {
@@ -45,8 +82,8 @@ angular.module('ticketList', [])
 angular.module('ticketDetail', ['ngRoute'])
     .component('ticketDetail', {
         templateUrl: 'ticket.html',
-        controller: ['$http', '$routeParams', function TicketDetailController($http, $routeParams) {
-            this.name = 'ticketDetail';
+        controller: ['$rootScope', '$http', '$routeParams', function TicketDetailController($rootScope, $http, $routeParams) {
+            $rootScope.name = 'ticketDetail';
 
             $http.get('/api/tickets/' + $routeParams.ticket)
                 .then(response => {
@@ -58,8 +95,8 @@ angular.module('ticketDetail', ['ngRoute'])
 angular.module('ticketEdit', ['ngRoute'])
     .component('ticketEdit', {
         templateUrl: 'edit.html',
-        controller: ['$http', '$routeParams', function TicketEditController($http, $routeParams) {
-            this.name = 'ticketEdit';
+        controller: ['$rootScope', '$http', '$routeParams', function TicketEditController($rootScope, $http, $routeParams) {
+            $rootScope.name = 'ticketEdit';
 
             $http.get('/api/tickets/' + $routeParams.ticket)
                 .then(response => {
@@ -72,7 +109,7 @@ angular.module('ticketEdit', ['ngRoute'])
         }]
     });
 
-angular.module('trackApp', ['ngRoute', 'loginForm', 'ticketAdd', 'ticketList', 'ticketDetail'])
+angular.module('trackApp', ['ngRoute', 'session', 'loginForm', 'ticketAdd', 'ticketList', 'ticketDetail'])
     .config(['$routeProvider', function config($routeProvider) {
         $routeProvider
             .when('/login', {
@@ -89,19 +126,19 @@ angular.module('trackApp', ['ngRoute', 'loginForm', 'ticketAdd', 'ticketList', '
             })
             .when('/tickets/:ticket/edit', {
                 template: '<ticket-edit></ticket-edit>'
-            });
+            })
+            .otherwise('/login');
     }])
-    .controller('RootController', ['$scope', '$route', function RootController($scope, $route) {
-        $scope.route = $route;
-        $scope.$watch(scope => {
-            if (scope.route.current !== undefined) {
-                if (scope.route.current.scope.$$childHead !== null) {
-                    return scope.route.current.scope.$$childHead.$ctrl.name;
-                }
-                return scope.route.current.scope.name;
+    .controller('RootController', ['$rootScope', '$location', 'Session', function RootController($rootScope, $location, Session) {
+        $rootScope.token = Session.getToken() || null;
+        $rootScope.onLogout = () => {
+            $rootScope.token = null;
+            Session.deleteToken();
+        };
+
+        $rootScope.$on('$routeChangeStart', () => {
+            if (!Session.getToken()) {
+                $location.url('/login');
             }
-            return scope.route.current;
-        }, name => {
-            $scope.name = name;
-        }, true);
+        });
     }]);

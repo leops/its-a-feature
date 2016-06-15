@@ -8,9 +8,8 @@
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.1",
-    "cookie-parser": "^1.4.3",
-    "cookie-session": "^2.0.0-alpha.1",
     "express": "^4.13.4",
+    "jsonwebtoken": "^7.0.1",
     "mongoose": "^4.5.0"
   }
 }

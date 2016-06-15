@@ -1,11 +1,11 @@
-<form action="/login" method="post">
-    <fieldset class="form-group">
-        <label for="username">Username :</label>
-        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+<form ng-submit="$ctrl.onSubmit()">
+    <fieldset class="form-group" ng-class="{'has-danger': ($ctrl.status === 404)}">
+        <label class="form-control-label" for="username">Username :</label>
+        <input type="text" class="form-control" ng-class="{'form-control-danger': ($ctrl.status === 404)}" id="username" ng-model="$ctrl.username" placeholder="Username">
     </fieldset>
-    <fieldset class="form-group">
-        <label for="password">Password :</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+    <fieldset class="form-group" ng-class="{'has-danger': ($ctrl.status === 403)}">
+        <label class="form-control-label" for="password">Password :</label>
+        <input type="password" class="form-control" ng-class="{'form-control-danger': ($ctrl.status === 403)}" id="password" ng-model="$ctrl.password" placeholder="Password">
     </fieldset>
-    <input type="submit" name="submit" value="Login" class="btn btn-primary">
+    <input type="submit" value="Login" class="btn btn-primary">
 </form>
