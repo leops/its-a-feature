@@ -6,11 +6,12 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>It's a feature</title>
 
-        <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="http://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="styles.css">
 
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-route.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.6/socket.io.min.js"></script>
         <script src="main.js"></script>
     </head>
     <body>
@@ -37,6 +38,9 @@
                     </li>
                 </ul>
             </header>
+            <div class="alert alert-info" role="alert" ng-repeat="notif in notifications">
+                {{notif}}
+            </div>
             <section class="row" ng-view></section>
         </main>
     </body>

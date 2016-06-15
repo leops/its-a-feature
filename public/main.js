@@ -13,6 +13,47 @@ angular.module('session', [])
         };
     });
 
+angular.module('socket', [])
+    .factory('Socket', function($rootScope) {
+        return {
+            events: [],
+            socket: null,
+            init(nsp = '') {
+                this.socket = io(location + nsp, {
+                    reconnection: false
+                });
+
+                this.events.forEach(event => {
+                    this.on.apply(undefined, event);
+                });
+            },
+            on(eventName, callback) {
+                if (this.socket != null) {
+                    this.socket.on(eventName, () => {
+                        const args = arguments;
+                        $rootScope.$apply(() => {
+                            callback.apply(undefined, args);
+                        });
+                    });
+                } else {
+                    this.events.push(arguments);
+                }
+            },
+            emit(eventName, data, callback) {
+                if (this.socket != null) {
+                    this.socket.emit(eventName, data, () => {
+                        const args = arguments;
+                        $rootScope.$apply(() => {
+                            if (callback != null) {
+                                callback.apply(undefined, args);
+                            }
+                        });
+                    });
+                }
+            }
+        };
+    });
+
 angular.module('loginForm', ['session'])
     .component('loginForm', {
         templateUrl: 'login.html',
@@ -120,7 +161,7 @@ angular.module('ticketEdit', ['ngRoute'])
         }]
     });
 
-angular.module('trackApp', ['ngRoute', 'session', 'loginForm', 'ticketAdd', 'ticketList', 'ticketDetail'])
+angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticketAdd', 'ticketList', 'ticketDetail'])
     .config(['$routeProvider', function config($routeProvider) {
         $routeProvider
             .when('/login', {
@@ -143,7 +184,7 @@ angular.module('trackApp', ['ngRoute', 'session', 'loginForm', 'ticketAdd', 'tic
             })
             .otherwise('/login');
     }])
-    .controller('RootController', ['$rootScope', '$location', 'Session', function RootController($rootScope, $location, Session) {
+    .controller('RootController', ['$rootScope', '$location', 'Session', 'Socket', function RootController($rootScope, $location, Session, Socket) {
         $rootScope.token = Session.getToken() || null;
         $rootScope.onLogout = () => {
             $rootScope.token = null;
@@ -154,5 +195,14 @@ angular.module('trackApp', ['ngRoute', 'session', 'loginForm', 'ticketAdd', 'tic
             if (!Session.getToken()) {
                 $location.url('/login');
             }
+        });
+
+        Socket.init();
+        $rootScope.notifications = [];
+        Socket.on('new-post', () => {
+            console.log(arguments);
+        });
+        Socket.on('new-comment', () => {
+            console.log(arguments);
         });
     }]);
