@@ -30,14 +30,14 @@ angular.module('loginForm', ['session'])
                     const token = res.data.token;
                     $rootScope.token = token;
                     Session.setToken(token);
-                    $location.url('/tickets');
+                    $location.url('/new');
                 }).catch(err => {
                     this.status = err.status;
                 });
             };
 
             if (Session.getToken()) {
-                $location.url('/tickets');
+                $location.url('/new');
             }
         }]
     });
@@ -69,8 +69,19 @@ angular.module('ticketAdd', [])
 angular.module('ticketList', [])
     .component('ticketList', {
         templateUrl: 'list.html',
+        bindings: {
+            filter: '='
+        },
         controller: ['$rootScope', '$http', function TicketListController($rootScope, $http) {
-            $rootScope.name = 'ticketList';
+            if (this.filter) {
+                $rootScope.name = 'ticketNew';
+                this.newFilter = {
+                    status: 'NEW'
+                };
+            } else {
+                $rootScope.name = 'ticketList';
+                this.newFilter = () => true;
+            }
 
             $http.get('/api/tickets')
                 .then(response => {
@@ -120,6 +131,9 @@ angular.module('trackApp', ['ngRoute', 'session', 'loginForm', 'ticketAdd', 'tic
             })
             .when('/tickets', {
                 template: '<ticket-list></ticket-list>'
+            })
+            .when('/new', {
+                template: '<ticket-list filter="true"></ticket-list>'
             })
             .when('/tickets/:ticket', {
                 template: '<ticket-detail></ticket-detail>'

@@ -10,7 +10,7 @@
 	    </tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="ticket in $ctrl.tickets">
+		<tr ng-repeat="ticket in $ctrl.tickets | filter:$ctrl.newFilter">
 			<td>{{ticket._id}} </td>
 			<td>{{ticket.summary}}</td>
 			<td>{{ticket.priority}}</td>
