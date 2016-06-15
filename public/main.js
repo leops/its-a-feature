@@ -206,8 +206,10 @@ angular.module('trackApp', ['ngRoute', 'session', 'socket', 'loginForm', 'ticket
         $rootScope.notifications = [];
         Socket.on('new-post', () => {
             console.log(arguments);
+            $rootScope.notifications.push('New ticket');
         });
         Socket.on('new-comment', () => {
             console.log(arguments);
+            $rootScope.notifications.push('New comment');
         });
     }]);
